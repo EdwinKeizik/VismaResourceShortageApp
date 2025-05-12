@@ -44,7 +44,7 @@ This console application is designed to help manage resource shortages within an
 ### 1. Clone the Repository
 
 ```bash
-git clone <https://github.com/EdwinKeizik/VismaResourceShortageManagement>
+git clone <https://github.com/EdwinKeizik/VismaResourceShortageApp>
 cd VismaResourceShortageManagement
 ```
 
@@ -55,3 +55,20 @@ Navigate to the directory containing the .sln file. Based on your structure, thi
 cd VismaResourceShortageManagement
 dotnet build VismaResourceShortageManagement.sln
 ```
+
+### 3. Run the Application
+Using dotnet run
+
+From the directory containing your main project's .csproj file (VismaResourceShortageManagement subfolder):
+
+```bash
+dotnet run
+```
+
+### 4. Run Unit Tests
+From the subfolder VismaResourceShortageManagement directory:
+
+```bash
+dotnet test --settings test.runsettings
+```
+
