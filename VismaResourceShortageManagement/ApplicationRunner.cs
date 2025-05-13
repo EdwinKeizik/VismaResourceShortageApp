@@ -30,57 +30,29 @@ namespace VismaResourceShortageManagement
 
 
             int input = _menuHandler.MainMenu();
-            while (input != 0) // Main application loop
+            while (input != 0)
             {
                 switch (input)
                 {
-                    case 1: // Register Shortage
-                        Shortage newShortageData = _menuHandler.PromptForNewShortageDetails(_userContext.Name);
-                        ShortageService.RegistrationResult regResult = _shortageService.RegisterShortage(newShortageData);
-                        switch (regResult)
-                        {
-                            case ShortageService.RegistrationResult.Success:
-                                _menuHandler.ShowMessage("\nNew shortage registered successfully.");
-                                break;
-                            case ShortageService.RegistrationResult.Updated:
-                                _menuHandler.ShowMessage("\nExisting shortage updated with a higher priority.");
-                                break;
-                            case ShortageService.RegistrationResult.DuplicateNotOverridden:
-                                _menuHandler.ShowMessage("\nWARNING: A shortage with this title and room already exists, and its priority is not lower.");
-                                break;
-                        }
+                    case 1:
+                        RegisterShortage();
                         break;
-                    case 2: // Show List (Unfiltered, but role-based)
+                    case 2:
                         List<Shortage> shortagesToDisplay = _shortageService.GetShortagesToDisplay();
                         _menuHandler.DisplayShortagesList(shortagesToDisplay);    
                         break;
-                    case 3: // Filter List
+                    case 3:
                         HandleFilterSubMenu();
                         break;
 
-                    case 4: // Delete Shortage
-                        _menuHandler.ShowMessage("\n--- Delete Shortage ---");
-                        string deleteTitle = _menuHandler.GetShortageTitle();
-                        string deleteRoom = _menuHandler.GetShortageRoom();
-                        ShortageService.DeletionResult delResult = _shortageService.DeleteShortage(deleteTitle, deleteRoom);
-                        switch (delResult)
-                        {
-                            case ShortageService.DeletionResult.Success:
-                                _menuHandler.ShowMessage("\nShortage successfully deleted.");
-                                break;
-                            case ShortageService.DeletionResult.NotFound:
-                                _menuHandler.ShowMessage("\nShortage with the specified title and room not found.");
-                                break;
-                            case ShortageService.DeletionResult.NoPermission:
-                                _menuHandler.ShowMessage("\nERROR: You do not have permission to delete this shortage.");
-                                break;
-                        }
+                    case 4:
+                        DeleteShortage();
                         break;
                     default:
                         _menuHandler.ShowMessage("\nInvalid main menu option. Please try again.");
                         break;
                 }
-                input = _menuHandler.MainMenu(); // Get next main menu choice
+                input = _menuHandler.MainMenu();
             }
             _menuHandler.ShowMessage("\nExiting application. Goodbye!");
         }
@@ -98,10 +70,10 @@ namespace VismaResourceShortageManagement
 
                 switch (filterInput)
                 {
-                    case 1: // Filter by Title
+                    case 1:
                         filterTitle = _menuHandler.GetShortageTitle();
                         break;
-                    case 2: // Filter by Date
+                    case 2:
                         filterStartDate = _menuHandler.GetShortageStartDate();
                         filterEndDate = _menuHandler.GetShortageEndDate();
                         if (filterEndDate < filterStartDate)
@@ -111,10 +83,10 @@ namespace VismaResourceShortageManagement
                             filterEndDate = null;
                         }
                         break;
-                    case 3: // Filter by Category
+                    case 3:
                         filterCategory = _menuHandler.GetShortageCategory();
                         break;
-                    case 4: // Filter by Room
+                    case 4:
                         filterRoom = _menuHandler.GetShortageRoom();
                         break;
                     default:
@@ -123,6 +95,43 @@ namespace VismaResourceShortageManagement
                 }
                 _menuHandler.DisplayShortagesList(_shortageService.GetShortagesToDisplay(filterTitle, filterStartDate, filterEndDate, filterCategory, filterRoom));
                 filterInput = _menuHandler.GetFilterOption();
+            }
+        }
+
+        private void RegisterShortage(){
+            Shortage newShortageData = _menuHandler.PromptForNewShortageDetails(_userContext.Name);
+            ShortageService.RegistrationResult regResult = _shortageService.RegisterShortage(newShortageData);
+            switch (regResult)
+            {
+                case ShortageService.RegistrationResult.Success:
+                    _menuHandler.ShowMessage("\nNew shortage registered successfully.");
+                    break;
+                case ShortageService.RegistrationResult.Updated:
+                    _menuHandler.ShowMessage("\nExisting shortage updated with a higher priority.");
+                    break;
+                case ShortageService.RegistrationResult.DuplicateNotOverridden:
+                    _menuHandler.ShowMessage("\nWARNING: A shortage with this title and room already exists, and its priority is not lower.");
+                    break;
+            }
+
+        }
+
+        private void DeleteShortage(){
+            _menuHandler.ShowMessage("\n--- Delete Shortage ---");
+            string deleteTitle = _menuHandler.GetShortageTitle();
+            string deleteRoom = _menuHandler.GetShortageRoom();
+            ShortageService.DeletionResult delResult = _shortageService.DeleteShortage(deleteTitle, deleteRoom);
+            switch (delResult)
+                {
+                case ShortageService.DeletionResult.Success:
+                    _menuHandler.ShowMessage("\nShortage successfully deleted.");
+                    break;
+                case ShortageService.DeletionResult.NotFound:
+                    _menuHandler.ShowMessage("\nShortage with the specified title and room not found.");
+                    break;
+                case ShortageService.DeletionResult.NoPermission:
+                    _menuHandler.ShowMessage("\nERROR: You do not have permission to delete this shortage.");
+                    break;
             }
         }
     }

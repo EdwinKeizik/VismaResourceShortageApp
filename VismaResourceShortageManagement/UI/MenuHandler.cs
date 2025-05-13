@@ -5,13 +5,6 @@ namespace VismaResourceShortageManagement.UI
 
     public class MenuHandler
     { 
-
-        public MenuHandler()
-        {
-        
-        }
-
-
         public string PromptForUserName()
         {
 
